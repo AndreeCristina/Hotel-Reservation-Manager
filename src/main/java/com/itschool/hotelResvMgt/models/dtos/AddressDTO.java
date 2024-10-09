@@ -1,11 +1,9 @@
-package com.itschool.hotelResvMgt.models.entities;
+package com.itschool.hotelResvMgt.models.dtos;
 
-import jakarta.persistence.Embeddable;
 import lombok.Data;
 
 @Data
-@Embeddable
-public class Address {
+public class AddressDTO {
 
     private String streetAddress;
     private String city;

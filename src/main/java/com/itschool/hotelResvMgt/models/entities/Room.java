@@ -3,10 +3,11 @@ package com.itschool.hotelResvMgt.models.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data
 @Entity
+@Data
 @Table(name = "rooms")
 public class Room {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_id")
@@ -23,15 +24,15 @@ public class Room {
     private Double pricePerNight;
 
     @Column(name = "availability", nullable = false)
-    private boolean available;
+    private boolean availability;
 
     public double getPricePerNight() {
         return switch (type) {
-            case STANDARD -> 50.0;
-            case SUPERIOR -> 80.0;
-            case SUITE -> 100;
-            case FAMILY -> 120;
-            case EXECUTIVE -> 200;
+            case STANDARD -> 250.0;
+            case SUPERIOR -> 280.0;
+            case SUITE -> 500;
+            case FAMILY -> 820;
+            case EXECUTIVE -> 1000;
             default -> throw new IllegalArgumentException("Unknown room type");
         };
     }

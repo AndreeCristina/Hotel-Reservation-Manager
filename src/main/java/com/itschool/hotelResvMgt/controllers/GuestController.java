@@ -1,5 +1,7 @@
 package com.itschool.hotelResvMgt.controllers;
 
-public class GuestController {
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+public class GuestController {
 }
