@@ -10,12 +10,17 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.itschool.hotelResvMgt.models.entities.RoomType.*;
+
 @Slf4j
 @Service
 public class RoomServiceImpl implements RoomService {
 
-    @Autowired
     RoomRepository roomRepository;
+
+    public RoomServiceImpl(RoomRepository roomRepository) {
+        this.roomRepository = roomRepository;
+    }
 
     @Override
     public Room createRoom(Room room) {
@@ -32,6 +37,18 @@ public class RoomServiceImpl implements RoomService {
         }
 
         return roomDTOS;
+    }
+
+    @Override
+    public RoomDTO mapToRoomDTO(Room room) {
+        RoomDTO roomDTO = new RoomDTO();
+        roomDTO.setId(room.getId());
+        roomDTO.setType(room.getType());
+        roomDTO.setAvailable(room.isAvailability());
+        roomDTO.setNumber(room.getNumber());
+        roomDTO.setPricePerNight(room.getPricePerNight());
+
+        return roomDTO;
     }
 
     public RoomDTO mapToDTO(Room room) {

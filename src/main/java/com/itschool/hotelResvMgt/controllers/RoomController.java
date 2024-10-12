@@ -15,8 +15,11 @@ import java.util.List;
 @RestController
 public class RoomController {
 
-    @Autowired
     private RoomService roomService;
+
+    public RoomController(RoomService roomService) {
+        this.roomService = roomService;
+    }
 
     @GetMapping("api/rooms")
     public ResponseEntity<List<RoomDTO>> getAvailableRooms() {
