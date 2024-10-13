@@ -5,6 +5,6 @@ import com.itschool.hotelResvMgt.models.dtos.ReservationDTOResponse;
 
 public interface ReservationService {
 
-    public ReservationDTOResponse createReservation(ReservationDTORequest reservationDTORequest);
+    public ReservationDTOResponse createReservationFromDTO(ReservationDTORequest reservationDTORequest);
     public void deleteReservationById(Long reservationId);
 }

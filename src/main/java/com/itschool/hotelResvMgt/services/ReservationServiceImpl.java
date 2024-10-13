@@ -1,9 +1,7 @@
 package com.itschool.hotelResvMgt.services;
 
-import com.itschool.hotelResvMgt.models.dtos.GuestDTO;
 import com.itschool.hotelResvMgt.models.dtos.ReservationDTORequest;
 import com.itschool.hotelResvMgt.models.dtos.ReservationDTOResponse;
-import com.itschool.hotelResvMgt.models.dtos.RoomDTO;
 import com.itschool.hotelResvMgt.models.entities.Guest;
 import com.itschool.hotelResvMgt.models.entities.Reservation;
 import com.itschool.hotelResvMgt.models.entities.Room;
@@ -35,7 +33,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ReservationDTOResponse createReservation(ReservationDTORequest reservationDTORequest) {
+    public ReservationDTOResponse createReservationFromDTO(ReservationDTORequest reservationDTORequest) {
         Reservation reservation = mapToReservation(reservationDTORequest);
         Reservation savedReservation = reservationRepository.save(reservation);
 

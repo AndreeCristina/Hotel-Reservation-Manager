@@ -51,6 +51,7 @@ public class RoomServiceImpl implements RoomService {
         return roomDTO;
     }
 
+    @Override
     public RoomDTO mapToDTO(Room room) {
         RoomDTO roomDTO = new RoomDTO();
         roomDTO.setId(room.getId());
