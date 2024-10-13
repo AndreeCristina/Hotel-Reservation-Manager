@@ -20,7 +20,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationDTOResponse> createReservation(@RequestBody ReservationDTORequest reservationDTORequest) {
-        ReservationDTOResponse createdReservation = reservationService.createReservation(reservationDTORequest);
+        ReservationDTOResponse createdReservation = reservationService.createReservationFromDTO(reservationDTORequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(createdReservation);
@@ -31,5 +31,13 @@ public class ReservationController {
         reservationService.deleteReservationById(reservationId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{reservationId}")
+    public ResponseEntity<ReservationDTOResponse> updateReservationCheckInDate(@PathVariable Long reservationId,
+            @RequestBody ReservationDTORequest updateRequest) {
+        ReservationDTOResponse response = reservationService.updateReservationCheckInDate(reservationId, updateRequest);
+
+        return ResponseEntity.ok(response);
     }
 }

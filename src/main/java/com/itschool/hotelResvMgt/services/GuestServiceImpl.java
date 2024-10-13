@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GuestServiceImpl implements GuestService {
+
     @Override
     public GuestDTO mapToGuestDTO(Guest guest) {
         GuestDTO guestDTO = new GuestDTO();

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.itschool.hotelResvMgt.models.entities.RoomType.*;
 
@@ -23,20 +24,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room createRoom(Room room) {
-        return null;
-    }
-
-    @Override
     public List<RoomDTO> getAvailableRooms(boolean availability) {
-        List<Room> rooms = roomRepository.findByAvailability(availability);
-        List<RoomDTO> roomDTOS = new ArrayList<>();
-
-        for (Room room : rooms) {
-            roomDTOS.add(mapToDTO(room));
-        }
-
-        return roomDTOS;
+        return roomRepository.findByAvailability(availability)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -51,6 +43,7 @@ public class RoomServiceImpl implements RoomService {
         return roomDTO;
     }
 
+    @Override
     public RoomDTO mapToDTO(Room room) {
         RoomDTO roomDTO = new RoomDTO();
         roomDTO.setId(room.getId());
