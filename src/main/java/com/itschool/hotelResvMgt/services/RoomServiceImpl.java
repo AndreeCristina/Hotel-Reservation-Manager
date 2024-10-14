@@ -50,7 +50,25 @@ public class RoomServiceImpl implements RoomService {
         roomDTO.setType(room.getType());
         roomDTO.setAvailable(room.isAvailability());
         roomDTO.setNumber(room.getNumber());
-        roomDTO.setPricePerNight(room.getPricePerNight());
+        switch (room.getType()) {
+            case STANDARD:
+                roomDTO.setPricePerNight(250.0);
+                break;
+            case SUPERIOR:
+                roomDTO.setPricePerNight(280.0);
+                break;
+            case SUITE:
+                roomDTO.setPricePerNight(500.0);
+                break;
+            case FAMILY:
+                roomDTO.setPricePerNight(820.0);
+                break;
+            case EXECUTIVE:
+                roomDTO.setPricePerNight(1000.0);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown room type");
+        };
 
         return roomDTO;
     }
