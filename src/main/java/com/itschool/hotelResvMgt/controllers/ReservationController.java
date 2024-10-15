@@ -4,7 +4,6 @@ import com.itschool.hotelResvMgt.models.dtos.ReservationDTORequest;
 import com.itschool.hotelResvMgt.models.dtos.ReservationDTOResponse;
 import com.itschool.hotelResvMgt.models.entities.RoomType;
 import com.itschool.hotelResvMgt.services.ReservationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
