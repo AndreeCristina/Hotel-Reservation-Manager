@@ -10,4 +10,6 @@ public interface RoomService {
     List<RoomDTO> getAvailableRooms(boolean availability);
 
     RoomDTO mapToRoomDTO(Room room);
+
+    RoomDTO mapToDTO(Room room);
 }
