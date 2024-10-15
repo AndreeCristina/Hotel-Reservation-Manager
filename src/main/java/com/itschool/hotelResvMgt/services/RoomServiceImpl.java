@@ -1,5 +1,6 @@
 package com.itschool.hotelResvMgt.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.hotelResvMgt.models.dtos.RoomDTO;
 import com.itschool.hotelResvMgt.models.entities.Room;
 import com.itschool.hotelResvMgt.repositories.RoomRepository;
@@ -18,58 +19,31 @@ import static com.itschool.hotelResvMgt.models.entities.RoomType.*;
 public class RoomServiceImpl implements RoomService {
 
     RoomRepository roomRepository;
+    ObjectMapper objectMapper;
 
-    public RoomServiceImpl(RoomRepository roomRepository) {
+    public RoomServiceImpl(RoomRepository roomRepository, ObjectMapper objectMapper) {
         this.roomRepository = roomRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public List<RoomDTO> getAvailableRooms(boolean availability) {
         return roomRepository.findByAvailability(availability)
                 .stream()
-                .map(this::mapToDTO)
+                .map(this::mapToRoomDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public RoomDTO mapToRoomDTO(Room room) {
-        RoomDTO roomDTO = new RoomDTO();
-        roomDTO.setId(room.getId());
-        roomDTO.setType(room.getType());
-        roomDTO.setAvailable(room.isAvailability());
-        roomDTO.setNumber(room.getNumber());
-        roomDTO.setPricePerNight(room.getPricePerNight());
+        try {
+            RoomDTO roomDTO = objectMapper.convertValue(room, RoomDTO.class);
+            roomDTO.setType(room.getType());
 
-        return roomDTO;
-    }
-
-    @Override
-    public RoomDTO mapToDTO(Room room) {
-        RoomDTO roomDTO = new RoomDTO();
-        roomDTO.setId(room.getId());
-        roomDTO.setType(room.getType());
-        roomDTO.setAvailable(room.isAvailability());
-        roomDTO.setNumber(room.getNumber());
-        switch (room.getType()) {
-            case STANDARD:
-                roomDTO.setPricePerNight(250.0);
-                break;
-            case SUPERIOR:
-                roomDTO.setPricePerNight(280.0);
-                break;
-            case SUITE:
-                roomDTO.setPricePerNight(500.0);
-                break;
-            case FAMILY:
-                roomDTO.setPricePerNight(820.0);
-                break;
-            case EXECUTIVE:
-                roomDTO.setPricePerNight(1000.0);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown room type");
-        };
-
-        return roomDTO;
+            return roomDTO;
+        } catch (IllegalArgumentException e) {
+            log.error("Error converting Room to RoomDTO: {}", e.getMessage());
+            throw e;
+        }
     }
 }
