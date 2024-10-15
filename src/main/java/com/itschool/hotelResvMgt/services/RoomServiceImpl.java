@@ -18,8 +18,8 @@ import static com.itschool.hotelResvMgt.models.entities.RoomType.*;
 @Service
 public class RoomServiceImpl implements RoomService {
 
-    RoomRepository roomRepository;
-    ObjectMapper objectMapper;
+    private final RoomRepository roomRepository;
+    private final ObjectMapper objectMapper;
 
     public RoomServiceImpl(RoomRepository roomRepository, ObjectMapper objectMapper) {
         this.roomRepository = roomRepository;

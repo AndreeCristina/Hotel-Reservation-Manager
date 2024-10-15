@@ -12,7 +12,7 @@ public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JoinColumn(name = "reservation_id")
+    @Column(name = "reservation_id", nullable = false)
     private Long id;
 
     @ManyToOne

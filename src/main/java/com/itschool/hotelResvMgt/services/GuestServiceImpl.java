@@ -1,5 +1,6 @@
 package com.itschool.hotelResvMgt.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.hotelResvMgt.models.dtos.AddressDTO;
 import com.itschool.hotelResvMgt.models.dtos.GuestDTO;
 import com.itschool.hotelResvMgt.models.entities.Address;
@@ -9,25 +10,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class GuestServiceImpl implements GuestService {
 
+    private final ObjectMapper objectMapper;
+
+    public GuestServiceImpl(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @Override
     public GuestDTO mapToGuestDTO(Guest guest) {
-        GuestDTO guestDTO = new GuestDTO();
-        guestDTO.setId(guest.getId());
-        guestDTO.setEmail(guest.getEmail());
-        guestDTO.setLastName(guest.getLastName());
-        guestDTO.setFirstName(guest.getFirstName());
-        guestDTO.setPhoneNumber(guest.getPhoneNumber());
-        guestDTO.setAddress(mapToAddressDTO(guest.getAddress()));
+        GuestDTO guestDTO = objectMapper.convertValue(guest, GuestDTO.class);
 
         return guestDTO;
     }
 
-    private AddressDTO mapToAddressDTO(Address address) {
-        AddressDTO addressDTO = new AddressDTO();
-        addressDTO.setStreetAddress(address.getStreetAddress());
-        addressDTO.setCity(address.getCity());
-        addressDTO.setCountry(address.getCountry());
-        addressDTO.setZipCode(address.getZipCode());
+    @Override
+    public AddressDTO mapToAddressDTO(Address address) {
+        AddressDTO addressDTO = objectMapper.convertValue(address, AddressDTO.class);
 
         return addressDTO;
     }

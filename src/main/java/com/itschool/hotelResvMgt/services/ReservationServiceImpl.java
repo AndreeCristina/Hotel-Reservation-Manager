@@ -9,24 +9,28 @@ import com.itschool.hotelResvMgt.models.dtos.ReservationDTOResponse;
 import com.itschool.hotelResvMgt.models.entities.Guest;
 import com.itschool.hotelResvMgt.models.entities.Reservation;
 import com.itschool.hotelResvMgt.models.entities.Room;
+import com.itschool.hotelResvMgt.models.entities.RoomType;
 import com.itschool.hotelResvMgt.repositories.GuestRepository;
 import com.itschool.hotelResvMgt.repositories.ReservationRepository;
 import com.itschool.hotelResvMgt.repositories.RoomRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class ReservationServiceImpl implements ReservationService {
 
     private final ObjectMapper objectMapper;
-    private ReservationRepository reservationRepository;
-    private RoomRepository roomRepository;
-    private GuestRepository guestRepository;
-    private RoomService roomService;
-    private GuestService guestService;
+    private final ReservationRepository reservationRepository;
+    private final RoomRepository roomRepository;
+    private final GuestRepository guestRepository;
+    private final RoomService roomService;
+    private final GuestService guestService;
 
     public ReservationServiceImpl(ObjectMapper objectMapper, ReservationRepository reservationRepository,
                                   RoomRepository roomRepository, GuestRepository guestRepository,
@@ -122,5 +126,20 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation savedReservation = reservationRepository.save(reservation);
 
         return createReservationDTOResponse(savedReservation);
+    }
+
+    @Override
+    public List<ReservationDTOResponse> getReservations(LocalDate checkInDate, LocalDate checkOutDate, RoomType roomType) {
+        Specification<Reservation> spec = Specification
+                .where(ReservationSpecification.checkInDateContains(checkInDate))
+                .and(ReservationSpecification.checkOutDateContains(checkOutDate))
+                .and(ReservationSpecification.findByRoomType(roomType));
+
+        List<Reservation> reservations = reservationRepository.findAll(spec);
+        log.info("{} reservations found", reservations.size());
+
+        return reservations.stream()
+                .map(reservation -> objectMapper.convertValue(reservation, ReservationDTOResponse.class))
+                .toList();
     }
 }
