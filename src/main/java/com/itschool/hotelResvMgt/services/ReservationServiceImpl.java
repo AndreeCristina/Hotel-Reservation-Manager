@@ -2,6 +2,7 @@ package com.itschool.hotelResvMgt.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.hotelResvMgt.exceptions.GuestNotFoundException;
+import com.itschool.hotelResvMgt.exceptions.ReservationNotFoundException;
 import com.itschool.hotelResvMgt.exceptions.RoomNotFoundException;
 import com.itschool.hotelResvMgt.exceptions.UnavailableRoomException;
 import com.itschool.hotelResvMgt.models.dtos.ReservationDTORequest;
@@ -112,7 +113,9 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public void deleteReservationById(Long reservationId) {
+        reservationRepository.findById(reservationId).orElseThrow(() -> new ReservationNotFoundException("Reservation with " + reservationId + "not found"));
         reservationRepository.deleteById(reservationId);
+        log.info("Reservation with id {} was deleted", reservationId);
     }
 
     @Override
