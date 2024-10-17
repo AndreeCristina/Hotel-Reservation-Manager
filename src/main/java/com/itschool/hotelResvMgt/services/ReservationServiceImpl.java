@@ -66,6 +66,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     private Reservation mapToReservation(ReservationDTORequest reservationDTORequest) {
         Reservation reservation = objectMapper.convertValue(reservationDTORequest, Reservation.class);
+        reservation.setCheckInDate(reservationDTORequest.getCheckInDate());
+        reservation.setCheckOutDate(reservationDTORequest.getCheckOutDate());
 
         Optional<Room> roomOptional = roomRepository.findById(reservationDTORequest.getRoomId());
         if (roomOptional.isEmpty()) {
