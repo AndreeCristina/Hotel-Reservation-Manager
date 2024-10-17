@@ -1,8 +1,6 @@
 package com.itschool.hotelResvMgt.repositories;
 
-import com.itschool.hotelResvMgt.models.dtos.ReservationDTOResponse;
 import com.itschool.hotelResvMgt.models.entities.Reservation;
-import com.itschool.hotelResvMgt.models.entities.RoomType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

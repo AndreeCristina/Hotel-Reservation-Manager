@@ -79,6 +79,8 @@ public class ReservationServiceImpl implements ReservationService {
         }
         reservation.setGuest(guestOptional.get());
 
+        RoomType roomType = reservation.getRoom().getType();
+
         return reservation;
     }
 

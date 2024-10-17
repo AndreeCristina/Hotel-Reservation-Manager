@@ -17,7 +17,7 @@ public class ReservationSpecification {
 
     public static Specification<Reservation> checkOutDateContains(LocalDate checkOutDate) {
         return (reservation, query, criteriaBuilder) -> checkOutDate == null ? null :
-                criteriaBuilder.equal(reservation.get("checkInDate"), checkOutDate);
+                criteriaBuilder.equal(reservation.get("checkOutDate"), checkOutDate);
     }
 
     public static Specification<Reservation> findByRoomType(RoomType roomType) {
