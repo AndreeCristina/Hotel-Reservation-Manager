@@ -1,6 +1,5 @@
 package com.itschool.hotelResvMgt.models.dtos;
 
-import com.itschool.hotelResvMgt.models.entities.RoomType;
 import lombok.Data;
 
 import java.time.LocalDate;
