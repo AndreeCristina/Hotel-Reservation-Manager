@@ -10,5 +10,5 @@ public class RoomDTO {
     private String number;
     private RoomType type;
     private Double pricePerNight;
-    private boolean available;
+    private boolean availability;
 }

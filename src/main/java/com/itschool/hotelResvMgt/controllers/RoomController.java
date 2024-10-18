@@ -19,7 +19,7 @@ public class RoomController {
         this.roomService = roomService;
     }
 
-    @GetMapping("api/rooms")
+    @GetMapping
     public ResponseEntity<List<RoomDTO>> getAvailableRooms() {
         List<RoomDTO> availableRooms = roomService.getAvailableRooms(true);
 

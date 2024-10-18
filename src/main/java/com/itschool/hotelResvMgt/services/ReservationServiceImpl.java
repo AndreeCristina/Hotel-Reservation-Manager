@@ -146,7 +146,13 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("{} reservations found", reservations.size());
 
         return reservations.stream()
-                .map(reservation -> objectMapper.convertValue(reservation, ReservationDTOResponse.class))
+                .map(reservation -> {
+                    ReservationDTOResponse reservationDTOResponse = objectMapper.convertValue(reservation, ReservationDTOResponse.class);
+                    reservationDTOResponse.setRoomDTO(roomService.mapToRoomDTO(reservation.getRoom()));
+                    reservationDTOResponse.setGuestDTO(guestService.mapToGuestDTO(reservation.getGuest()));
+
+                    return reservationDTOResponse;
+                })
                 .toList();
     }
 }

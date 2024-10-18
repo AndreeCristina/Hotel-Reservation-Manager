@@ -30,9 +30,9 @@ public class Room {
         return switch (type) {
             case STANDARD -> 250.0;
             case SUPERIOR -> 280.0;
-            case SUITE -> 500;
-            case FAMILY -> 820;
-            case EXECUTIVE -> 1000;
+            case SUITE -> 500.0;
+            case FAMILY -> 820.0;
+            case EXECUTIVE -> 1000.0;
             default -> throw new IllegalArgumentException("Unknown room type");
         };
     }
