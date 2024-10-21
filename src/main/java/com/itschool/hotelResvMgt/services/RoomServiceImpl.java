@@ -17,10 +17,12 @@ public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
     private final ObjectMapper objectMapper;
+    private final RoomPricingServiceImpl roomPricingService;
 
-    public RoomServiceImpl(RoomRepository roomRepository, ObjectMapper objectMapper) {
+    public RoomServiceImpl(RoomRepository roomRepository, ObjectMapper objectMapper, RoomPricingServiceImpl roomPricingService) {
         this.roomRepository = roomRepository;
         this.objectMapper = objectMapper;
+        this.roomPricingService = roomPricingService;
     }
 
     @Override
@@ -35,6 +37,8 @@ public class RoomServiceImpl implements RoomService {
     public RoomDTO mapToRoomDTO(Room room) {
         RoomDTO roomDTO = objectMapper.convertValue(room, RoomDTO.class);
         roomDTO.setType(room.getType());
+
+        roomDTO.setPricePerNight(roomPricingService.getPricePerNight(room.getType()));
 
         return roomDTO;
     }
