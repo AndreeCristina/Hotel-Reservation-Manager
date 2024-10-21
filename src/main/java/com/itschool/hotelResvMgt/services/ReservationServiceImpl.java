@@ -14,6 +14,7 @@ import com.itschool.hotelResvMgt.models.entities.RoomType;
 import com.itschool.hotelResvMgt.repositories.GuestRepository;
 import com.itschool.hotelResvMgt.repositories.ReservationRepository;
 import com.itschool.hotelResvMgt.repositories.RoomRepository;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -45,8 +46,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ResponseReservationDTO createReservationFromDTO(RequestReservationDTO requestReservationDTO) {
-        validateReservationDTO(requestReservationDTO);
+    public ResponseReservationDTO createReservationFromDTO(@Valid RequestReservationDTO requestReservationDTO) {
         Reservation reservation = mapToReservation(requestReservationDTO);
 
         if (!checkRoomAvailability(reservation.getRoom(), reservation.getCheckInDate(), reservation.getCheckOutDate())) {
@@ -85,24 +85,6 @@ public class ReservationServiceImpl implements ReservationService {
         RoomType roomType = reservation.getRoom().getType();
 
         return reservation;
-    }
-
-    private void validateReservationDTO(RequestReservationDTO requestReservationDTO) {
-        if (requestReservationDTO.getRoomId() == null) {
-            throw new IllegalArgumentException("Room ID is required");
-        }
-
-        if (requestReservationDTO.getGuestId() == null) {
-            throw new IllegalArgumentException("Guest ID is required");
-        }
-
-        if (requestReservationDTO.getGuestsNumber() == null || requestReservationDTO.getGuestsNumber() <= 0) {
-            throw new IllegalArgumentException("Number of guests must be a positive integer");
-        }
-
-        if (requestReservationDTO.getCheckInDate() == null || requestReservationDTO.getCheckInDate().isAfter(requestReservationDTO.getCheckOutDate())) {
-            throw new IllegalArgumentException("Check-in date must be before check-out date");
-        }
     }
 
     private boolean checkRoomAvailability(Room room, LocalDate checkInDate, LocalDate checkOutDate) {
