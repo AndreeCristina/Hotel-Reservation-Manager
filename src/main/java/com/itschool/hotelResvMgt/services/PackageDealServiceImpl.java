@@ -1,10 +1,12 @@
 package com.itschool.hotelResvMgt.services;
 
 import com.itschool.hotelResvMgt.models.entities.PackageDealType;
+import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Service
 public class PackageDealServiceImpl implements PackageDealService {
 
     @Override

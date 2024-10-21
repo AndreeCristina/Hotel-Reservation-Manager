@@ -135,6 +135,10 @@ public class ReservationServiceImpl implements ReservationService {
     private boolean checkRoomAvailability(Room room, LocalDate checkInDate, LocalDate checkOutDate) {
         List<Reservation> existingReservations = reservationRepository.findByRoomIdAndCheckInDateBetween(room.getId(), checkInDate, checkOutDate);
 
-        return existingReservations.isEmpty();
+        if (!existingReservations.isEmpty()) {
+            throw new UnavailableRoomException(room, checkInDate, checkOutDate);
+        }
+
+        return true;
     }
 }

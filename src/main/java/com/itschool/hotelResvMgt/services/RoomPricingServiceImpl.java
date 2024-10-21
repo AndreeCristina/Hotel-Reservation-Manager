@@ -22,6 +22,7 @@ public class RoomPricingServiceImpl implements RoomPricingService {
     @Value("${room.price.executive}")
     private double executivePrice;
 
+    @Override
     public double getPricePerNight(RoomType type) {
         return switch (type) {
             case STANDARD -> standardPrice;
