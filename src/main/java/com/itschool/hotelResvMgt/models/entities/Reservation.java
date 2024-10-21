@@ -23,8 +23,8 @@ public class Reservation {
     @JoinColumn(name = "room_id")
     private Room room;
 
-    @Column(name = "number_of_guests", nullable = false)
-    private Integer numberOfGuests;
+    @Column(name = "guests_number", nullable = false)
+    private Integer guestsNumber;
 
     @Column(name = "check_in_date", nullable = false)
     private LocalDate checkInDate;
