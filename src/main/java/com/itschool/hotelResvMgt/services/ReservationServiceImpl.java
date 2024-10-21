@@ -5,8 +5,8 @@ import com.itschool.hotelResvMgt.exceptions.GuestNotFoundException;
 import com.itschool.hotelResvMgt.exceptions.ReservationNotFoundException;
 import com.itschool.hotelResvMgt.exceptions.RoomNotFoundException;
 import com.itschool.hotelResvMgt.exceptions.UnavailableRoomException;
-import com.itschool.hotelResvMgt.models.dtos.ReservationDTORequest;
-import com.itschool.hotelResvMgt.models.dtos.ReservationDTOResponse;
+import com.itschool.hotelResvMgt.models.dtos.RequestReservationDTO;
+import com.itschool.hotelResvMgt.models.dtos.ResponseReservationDTO;
 import com.itschool.hotelResvMgt.models.entities.Guest;
 import com.itschool.hotelResvMgt.models.entities.Reservation;
 import com.itschool.hotelResvMgt.models.entities.Room;
@@ -45,9 +45,9 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ReservationDTOResponse createReservationFromDTO(ReservationDTORequest reservationDTORequest) {
-        validateReservationDTO(reservationDTORequest);
-        Reservation reservation = mapToReservation(reservationDTORequest);
+    public ResponseReservationDTO createReservationFromDTO(RequestReservationDTO requestReservationDTO) {
+        validateReservationDTO(requestReservationDTO);
+        Reservation reservation = mapToReservation(requestReservationDTO);
 
         if (!checkRoomAvailability(reservation.getRoom(), reservation.getCheckInDate(), reservation.getCheckOutDate())) {
             throw new UnavailableRoomException(reservation.getRoom(), reservation.getCheckInDate(), reservation.getCheckOutDate());
@@ -57,28 +57,28 @@ public class ReservationServiceImpl implements ReservationService {
         return createReservationDTOResponse(savedReservation);
     }
 
-    private ReservationDTOResponse createReservationDTOResponse(Reservation reservation) {
-        ReservationDTOResponse reservationDTOResponse = objectMapper.convertValue(reservation, ReservationDTOResponse.class);
-        reservationDTOResponse.setRoomDTO(roomService.mapToRoomDTO(reservation.getRoom()));
-        reservationDTOResponse.setGuestDTO(guestService.mapToGuestDTO(reservation.getGuest()));
+    private ResponseReservationDTO createReservationDTOResponse(Reservation reservation) {
+        ResponseReservationDTO responseReservationDTO = objectMapper.convertValue(reservation, ResponseReservationDTO.class);
+        responseReservationDTO.setRoomDTO(roomService.mapToRoomDTO(reservation.getRoom()));
+        responseReservationDTO.setGuestDTO(guestService.mapToGuestDTO(reservation.getGuest()));
 
-        return reservationDTOResponse;
+        return responseReservationDTO;
     }
 
-    private Reservation mapToReservation(ReservationDTORequest reservationDTORequest) {
-        Reservation reservation = objectMapper.convertValue(reservationDTORequest, Reservation.class);
-        reservation.setCheckInDate(reservationDTORequest.getCheckInDate());
-        reservation.setCheckOutDate(reservationDTORequest.getCheckOutDate());
+    private Reservation mapToReservation(RequestReservationDTO requestReservationDTO) {
+        Reservation reservation = objectMapper.convertValue(requestReservationDTO, Reservation.class);
+        reservation.setCheckInDate(requestReservationDTO.getCheckInDate());
+        reservation.setCheckOutDate(requestReservationDTO.getCheckOutDate());
 
-        Optional<Room> roomOptional = roomRepository.findById(reservationDTORequest.getRoomId());
+        Optional<Room> roomOptional = roomRepository.findById(requestReservationDTO.getRoomId());
         if (roomOptional.isEmpty()) {
-            throw new RoomNotFoundException(reservationDTORequest.getRoomId());
+            throw new RoomNotFoundException(requestReservationDTO.getRoomId());
         }
         reservation.setRoom(roomOptional.get());
 
-        Optional<Guest> guestOptional = guestRepository.findById(reservationDTORequest.getGuestId());
+        Optional<Guest> guestOptional = guestRepository.findById(requestReservationDTO.getGuestId());
         if (guestOptional.isEmpty()) {
-            throw new GuestNotFoundException(reservationDTORequest.getGuestId());
+            throw new GuestNotFoundException(requestReservationDTO.getGuestId());
         }
         reservation.setGuest(guestOptional.get());
 
@@ -87,20 +87,20 @@ public class ReservationServiceImpl implements ReservationService {
         return reservation;
     }
 
-    private void validateReservationDTO(ReservationDTORequest reservationDTORequest) {
-        if (reservationDTORequest.getRoomId() == null) {
+    private void validateReservationDTO(RequestReservationDTO requestReservationDTO) {
+        if (requestReservationDTO.getRoomId() == null) {
             throw new IllegalArgumentException("Room ID is required");
         }
 
-        if (reservationDTORequest.getGuestId() == null) {
+        if (requestReservationDTO.getGuestId() == null) {
             throw new IllegalArgumentException("Guest ID is required");
         }
 
-        if (reservationDTORequest.getNumberOfGuests() == null || reservationDTORequest.getNumberOfGuests() <= 0) {
+        if (requestReservationDTO.getGuestsNumber() == null || requestReservationDTO.getGuestsNumber() <= 0) {
             throw new IllegalArgumentException("Number of guests must be a positive integer");
         }
 
-        if (reservationDTORequest.getCheckInDate() == null || reservationDTORequest.getCheckInDate().isAfter(reservationDTORequest.getCheckOutDate())) {
+        if (requestReservationDTO.getCheckInDate() == null || requestReservationDTO.getCheckInDate().isAfter(requestReservationDTO.getCheckOutDate())) {
             throw new IllegalArgumentException("Check-in date must be before check-out date");
         }
     }
@@ -113,13 +113,13 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public void deleteReservationById(Long reservationId) {
-        reservationRepository.findById(reservationId).orElseThrow(() -> new ReservationNotFoundException("Reservation with " + reservationId + "not found"));
+        reservationRepository.findById(reservationId).orElseThrow(() -> new ReservationNotFoundException("Reservation with id " + reservationId + "not found"));
         reservationRepository.deleteById(reservationId);
         log.info("Reservation with id {} was deleted", reservationId);
     }
 
     @Override
-    public ReservationDTOResponse updateReservationCheckInDate(Long reservationId, ReservationDTORequest updateRequest) {
+    public ResponseReservationDTO updateReservationCheckInDate(Long reservationId, RequestReservationDTO updateRequest) {
         Optional<Reservation> reservationOptional = reservationRepository.findById(reservationId);
 
         if (reservationOptional.isEmpty()) {
@@ -136,7 +136,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<ReservationDTOResponse> getReservations(LocalDate checkInDate, LocalDate checkOutDate, RoomType roomType) {
+    public List<ResponseReservationDTO> getReservations(LocalDate checkInDate, LocalDate checkOutDate, RoomType roomType) {
         Specification<Reservation> spec = Specification
                 .where(ReservationSpecification.checkInDateContains(checkInDate))
                 .and(ReservationSpecification.checkOutDateContains(checkOutDate))
@@ -147,11 +147,11 @@ public class ReservationServiceImpl implements ReservationService {
 
         return reservations.stream()
                 .map(reservation -> {
-                    ReservationDTOResponse reservationDTOResponse = objectMapper.convertValue(reservation, ReservationDTOResponse.class);
-                    reservationDTOResponse.setRoomDTO(roomService.mapToRoomDTO(reservation.getRoom()));
-                    reservationDTOResponse.setGuestDTO(guestService.mapToGuestDTO(reservation.getGuest()));
+                    ResponseReservationDTO responseReservationDTO = objectMapper.convertValue(reservation, ResponseReservationDTO.class);
+                    responseReservationDTO.setRoomDTO(roomService.mapToRoomDTO(reservation.getRoom()));
+                    responseReservationDTO.setGuestDTO(guestService.mapToGuestDTO(reservation.getGuest()));
 
-                    return reservationDTOResponse;
+                    return responseReservationDTO;
                 })
                 .toList();
     }

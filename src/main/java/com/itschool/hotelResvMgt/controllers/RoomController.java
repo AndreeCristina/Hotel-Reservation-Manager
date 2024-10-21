@@ -21,8 +21,6 @@ public class RoomController {
 
     @GetMapping
     public ResponseEntity<List<RoomDTO>> getAvailableRooms() {
-        List<RoomDTO> availableRooms = roomService.getAvailableRooms(true);
-
-        return ResponseEntity.ok(availableRooms);
+        return ResponseEntity.ok(roomService.getAvailableRooms(true));
     }
 }

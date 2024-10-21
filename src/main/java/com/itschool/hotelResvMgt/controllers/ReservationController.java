@@ -1,7 +1,7 @@
 package com.itschool.hotelResvMgt.controllers;
 
-import com.itschool.hotelResvMgt.models.dtos.ReservationDTORequest;
-import com.itschool.hotelResvMgt.models.dtos.ReservationDTOResponse;
+import com.itschool.hotelResvMgt.models.dtos.RequestReservationDTO;
+import com.itschool.hotelResvMgt.models.dtos.ResponseReservationDTO;
 import com.itschool.hotelResvMgt.models.entities.RoomType;
 import com.itschool.hotelResvMgt.services.ReservationService;
 import org.springframework.http.HttpStatus;
@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -22,11 +24,25 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationDTOResponse> createReservation(@RequestBody ReservationDTORequest reservationDTORequest) {
-        ReservationDTOResponse createdReservation = reservationService.createReservationFromDTO(reservationDTORequest);
+    public ResponseEntity<ResponseReservationDTO> createReservation(@RequestBody RequestReservationDTO requestReservationDTO) {
+        return ResponseEntity.status(CREATED)
+                .body(reservationService.createReservationFromDTO(requestReservationDTO));
+    }
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(createdReservation);
+    @GetMapping
+    public ResponseEntity<List<ResponseReservationDTO>> getReservations(
+            @RequestParam(value = "checkInDate", required = false) LocalDate checkInDate,
+            @RequestParam(value = "checkOutDate", required = false) LocalDate checkOutDate,
+            @RequestParam(value = "roomType", required = false) RoomType roomType) {
+        return ResponseEntity.ok(reservationService.getReservations(checkInDate, checkOutDate, roomType));
+    }
+
+    @PatchMapping("/{reservationId}")
+    public ResponseEntity<ResponseReservationDTO> updateReservationCheckInDate(
+            @PathVariable Long reservationId, @RequestBody RequestReservationDTO updateRequest) {
+        ResponseReservationDTO response = reservationService.updateReservationCheckInDate(reservationId, updateRequest);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{reservationId}")
@@ -34,21 +50,5 @@ public class ReservationController {
         reservationService.deleteReservationById(reservationId);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{reservationId}")
-    public ResponseEntity<ReservationDTOResponse> updateReservationCheckInDate(
-            @PathVariable Long reservationId, @RequestBody ReservationDTORequest updateRequest) {
-        ReservationDTOResponse response = reservationService.updateReservationCheckInDate(reservationId, updateRequest);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<ReservationDTOResponse>> getReservations(
-            @RequestParam(value = "checkInDate", required = false) LocalDate checkInDate,
-            @RequestParam(value = "checkOutDate", required = false) LocalDate checkOutDate,
-            @RequestParam(value = "roomType", required = false) RoomType roomType) {
-        return ResponseEntity.ok(reservationService.getReservations(checkInDate, checkOutDate, roomType));
     }
 }

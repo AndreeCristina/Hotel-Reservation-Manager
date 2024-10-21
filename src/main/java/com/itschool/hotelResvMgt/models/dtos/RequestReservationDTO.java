@@ -5,12 +5,12 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class ReservationDTORequest {
+public class RequestReservationDTO {
 
     private Long id;
     private Long guestId;
     private Long roomId;
-    private Integer numberOfGuests;
+    private Integer guestsNumber;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
 }
