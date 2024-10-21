@@ -46,7 +46,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ResponseReservationDTO createReservationFromDTO(@Valid RequestReservationDTO requestReservationDTO) {
+    public ResponseReservationDTO createReservation(@Valid RequestReservationDTO requestReservationDTO) {
         Reservation reservation = mapToReservation(requestReservationDTO);
 
         if (!checkRoomAvailability(reservation.getRoom(), reservation.getCheckInDate(), reservation.getCheckOutDate())) {
@@ -55,42 +55,6 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation savedReservation = reservationRepository.save(reservation);
 
         return createReservationDTOResponse(savedReservation);
-    }
-
-    private ResponseReservationDTO createReservationDTOResponse(Reservation reservation) {
-        ResponseReservationDTO responseReservationDTO = objectMapper.convertValue(reservation, ResponseReservationDTO.class);
-        responseReservationDTO.setRoomDTO(roomService.mapToRoomDTO(reservation.getRoom()));
-        responseReservationDTO.setGuestDTO(guestService.mapToGuestDTO(reservation.getGuest()));
-
-        return responseReservationDTO;
-    }
-
-    private Reservation mapToReservation(RequestReservationDTO requestReservationDTO) {
-        Reservation reservation = objectMapper.convertValue(requestReservationDTO, Reservation.class);
-        reservation.setCheckInDate(requestReservationDTO.getCheckInDate());
-        reservation.setCheckOutDate(requestReservationDTO.getCheckOutDate());
-
-        Optional<Room> roomOptional = roomRepository.findById(requestReservationDTO.getRoomId());
-        if (roomOptional.isEmpty()) {
-            throw new RoomNotFoundException(requestReservationDTO.getRoomId());
-        }
-        reservation.setRoom(roomOptional.get());
-
-        Optional<Guest> guestOptional = guestRepository.findById(requestReservationDTO.getGuestId());
-        if (guestOptional.isEmpty()) {
-            throw new GuestNotFoundException(requestReservationDTO.getGuestId());
-        }
-        reservation.setGuest(guestOptional.get());
-
-        RoomType roomType = reservation.getRoom().getType();
-
-        return reservation;
-    }
-
-    private boolean checkRoomAvailability(Room room, LocalDate checkInDate, LocalDate checkOutDate) {
-        List<Reservation> existingReservations = reservationRepository.findByRoomIdAndCheckInDateBetween(room.getId(), checkInDate, checkOutDate);
-
-        return existingReservations.isEmpty();
     }
 
     @Override
@@ -136,5 +100,41 @@ public class ReservationServiceImpl implements ReservationService {
                     return responseReservationDTO;
                 })
                 .toList();
+    }
+
+    private ResponseReservationDTO createReservationDTOResponse(Reservation reservation) {
+        ResponseReservationDTO responseReservationDTO = objectMapper.convertValue(reservation, ResponseReservationDTO.class);
+        responseReservationDTO.setRoomDTO(roomService.mapToRoomDTO(reservation.getRoom()));
+        responseReservationDTO.setGuestDTO(guestService.mapToGuestDTO(reservation.getGuest()));
+
+        return responseReservationDTO;
+    }
+
+    private Reservation mapToReservation(RequestReservationDTO requestReservationDTO) {
+        Reservation reservation = objectMapper.convertValue(requestReservationDTO, Reservation.class);
+        reservation.setCheckInDate(requestReservationDTO.getCheckInDate());
+        reservation.setCheckOutDate(requestReservationDTO.getCheckOutDate());
+
+        Optional<Room> roomOptional = roomRepository.findById(requestReservationDTO.getRoomId());
+        if (roomOptional.isEmpty()) {
+            throw new RoomNotFoundException(requestReservationDTO.getRoomId());
+        }
+        reservation.setRoom(roomOptional.get());
+
+        Optional<Guest> guestOptional = guestRepository.findById(requestReservationDTO.getGuestId());
+        if (guestOptional.isEmpty()) {
+            throw new GuestNotFoundException(requestReservationDTO.getGuestId());
+        }
+        reservation.setGuest(guestOptional.get());
+
+        RoomType roomType = reservation.getRoom().getType();
+
+        return reservation;
+    }
+
+    private boolean checkRoomAvailability(Room room, LocalDate checkInDate, LocalDate checkOutDate) {
+        List<Reservation> existingReservations = reservationRepository.findByRoomIdAndCheckInDateBetween(room.getId(), checkInDate, checkOutDate);
+
+        return existingReservations.isEmpty();
     }
 }

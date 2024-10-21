@@ -18,15 +18,13 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public GuestDTO mapToGuestDTO(Guest guest) {
-        GuestDTO guestDTO = objectMapper.convertValue(guest, GuestDTO.class);
 
-        return guestDTO;
+        return objectMapper.convertValue(guest, GuestDTO.class);
     }
 
     @Override
     public AddressDTO mapToAddressDTO(Address address) {
-        AddressDTO addressDTO = objectMapper.convertValue(address, AddressDTO.class);
 
-        return addressDTO;
+        return objectMapper.convertValue(address, AddressDTO.class);
     }
 }

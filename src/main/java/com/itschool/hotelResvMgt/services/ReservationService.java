@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ReservationService {
 
-    public ResponseReservationDTO createReservationFromDTO(RequestReservationDTO requestReservationDTO);
+    public ResponseReservationDTO createReservation(RequestReservationDTO requestReservationDTO);
 
     public void deleteReservationById(Long reservationId);
 

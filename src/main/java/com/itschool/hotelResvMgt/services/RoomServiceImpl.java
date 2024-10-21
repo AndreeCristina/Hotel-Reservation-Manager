@@ -33,14 +33,9 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDTO mapToRoomDTO(Room room) {
-        try {
-            RoomDTO roomDTO = objectMapper.convertValue(room, RoomDTO.class);
-            roomDTO.setType(room.getType());
+        RoomDTO roomDTO = objectMapper.convertValue(room, RoomDTO.class);
+        roomDTO.setType(room.getType());
 
-            return roomDTO;
-        } catch (IllegalArgumentException e) {
-            log.error("Error converting Room to RoomDTO: {}", e.getMessage());
-            throw e;
-        }
+        return roomDTO;
     }
 }

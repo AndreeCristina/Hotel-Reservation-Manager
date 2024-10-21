@@ -5,7 +5,6 @@ import com.itschool.hotelResvMgt.models.dtos.ResponseReservationDTO;
 import com.itschool.hotelResvMgt.models.entities.RoomType;
 import com.itschool.hotelResvMgt.services.ReservationService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +26,7 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<ResponseReservationDTO> createReservation(@Valid @RequestBody RequestReservationDTO requestReservationDTO) {
         return ResponseEntity.status(CREATED)
-                .body(reservationService.createReservationFromDTO(requestReservationDTO));
+                .body(reservationService.createReservation(requestReservationDTO));
     }
 
     @GetMapping
