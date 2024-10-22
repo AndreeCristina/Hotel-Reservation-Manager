@@ -17,9 +17,9 @@ public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
     private final ObjectMapper objectMapper;
-    private final RoomPricingServiceImpl roomPricingService;
+    private final RoomPricingService roomPricingService;
 
-    public RoomServiceImpl(RoomRepository roomRepository, ObjectMapper objectMapper, RoomPricingServiceImpl roomPricingService) {
+    public RoomServiceImpl(RoomRepository roomRepository, ObjectMapper objectMapper, RoomPricingService roomPricingService) {
         this.roomRepository = roomRepository;
         this.objectMapper = objectMapper;
         this.roomPricingService = roomPricingService;
