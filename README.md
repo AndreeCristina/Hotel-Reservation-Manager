@@ -51,6 +51,6 @@ GET /api/rooms: Retrieve available rooms.
 
 One of the GET APIs allows retrieving reservations based on multiple parameters:
 
-GET /api/reservations?checkInDate=2024-10-18&checkOutDate=2024-10-20&roomType=SINGLE
+GET api/reservations?checkInDate=2026-09-22&checkOutDate=2026-09-28&roomType=FAMILY
 
 This will return reservations filtered by check-in date, check-out date, and room type.
