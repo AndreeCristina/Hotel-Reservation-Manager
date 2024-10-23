@@ -5,8 +5,10 @@ import com.itschool.hotelResvMgt.exceptions.GuestNotFoundException;
 import com.itschool.hotelResvMgt.exceptions.ReservationNotFoundException;
 import com.itschool.hotelResvMgt.exceptions.RoomNotFoundException;
 import com.itschool.hotelResvMgt.exceptions.UnavailableRoomException;
+import com.itschool.hotelResvMgt.models.dtos.GuestDTO;
 import com.itschool.hotelResvMgt.models.dtos.RequestReservationDTO;
 import com.itschool.hotelResvMgt.models.dtos.ResponseReservationDTO;
+import com.itschool.hotelResvMgt.models.dtos.RoomDTO;
 import com.itschool.hotelResvMgt.models.entities.Guest;
 import com.itschool.hotelResvMgt.models.entities.Reservation;
 import com.itschool.hotelResvMgt.models.entities.Room;
@@ -31,18 +33,12 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final RoomRepository roomRepository;
     private final GuestRepository guestRepository;
-    private final RoomService roomService;
-    private final GuestService guestService;
 
-    public ReservationServiceImpl(ObjectMapper objectMapper, ReservationRepository reservationRepository,
-                                  RoomRepository roomRepository, GuestRepository guestRepository,
-                                  RoomService roomService, GuestService guestService) {
+    public ReservationServiceImpl(ObjectMapper objectMapper, ReservationRepository reservationRepository, RoomRepository roomRepository, GuestRepository guestRepository) {
         this.objectMapper = objectMapper;
         this.reservationRepository = reservationRepository;
         this.roomRepository = roomRepository;
         this.guestRepository = guestRepository;
-        this.roomService = roomService;
-        this.guestService = guestService;
     }
 
     @Override
@@ -52,9 +48,8 @@ public class ReservationServiceImpl implements ReservationService {
         if (!isRoomAvailable(reservation.getRoom(), reservation.getCheckInDate(), reservation.getCheckOutDate())) {
             throw new UnavailableRoomException(reservation.getRoom(), reservation.getCheckInDate(), reservation.getCheckOutDate());
         }
-        Reservation savedReservation = reservationRepository.save(reservation);
 
-        return createReservationDTOResponse(savedReservation);
+        return createReservationDTOResponse(reservationRepository.save(reservation));
     }
 
     @Override
@@ -76,9 +71,8 @@ public class ReservationServiceImpl implements ReservationService {
         if (updateRequest.getCheckInDate() != null) {
             reservation.setCheckInDate(updateRequest.getCheckInDate());
         }
-        Reservation savedReservation = reservationRepository.save(reservation);
 
-        return createReservationDTOResponse(savedReservation);
+        return createReservationDTOResponse(reservationRepository.save(reservation));
     }
 
     @Override
@@ -94,8 +88,8 @@ public class ReservationServiceImpl implements ReservationService {
         return reservations.stream()
                 .map(reservation -> {
                     ResponseReservationDTO responseReservationDTO = objectMapper.convertValue(reservation, ResponseReservationDTO.class);
-                    responseReservationDTO.setRoomDTO(roomService.mapToRoomDTO(reservation.getRoom()));
-                    responseReservationDTO.setGuestDTO(guestService.mapToGuestDTO(reservation.getGuest()));
+                    responseReservationDTO.setRoomDTO(objectMapper.convertValue(reservation.getRoom(), RoomDTO.class));
+                    responseReservationDTO.setGuestDTO(objectMapper.convertValue(reservation.getGuest(), GuestDTO.class));
 
                     return responseReservationDTO;
                 })
@@ -104,8 +98,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     private ResponseReservationDTO createReservationDTOResponse(Reservation reservation) {
         ResponseReservationDTO responseReservationDTO = objectMapper.convertValue(reservation, ResponseReservationDTO.class);
-        responseReservationDTO.setRoomDTO(roomService.mapToRoomDTO(reservation.getRoom()));
-        responseReservationDTO.setGuestDTO(guestService.mapToGuestDTO(reservation.getGuest()));
+        responseReservationDTO.setRoomDTO(objectMapper.convertValue(reservation.getRoom(), RoomDTO.class));
+        responseReservationDTO.setGuestDTO(objectMapper.convertValue(reservation.getGuest(), GuestDTO.class));
 
         return responseReservationDTO;
     }

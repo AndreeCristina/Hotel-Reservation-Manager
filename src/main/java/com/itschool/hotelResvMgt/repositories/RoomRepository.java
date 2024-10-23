@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificationExecutor<Room> {
-    public List<Room> findByAvailability(boolean availability);
+    List<Room> findByAvailability(boolean availability);
 }

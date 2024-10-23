@@ -13,9 +13,7 @@ import com.itschool.hotelResvMgt.models.entities.Room;
 import com.itschool.hotelResvMgt.repositories.GuestRepository;
 import com.itschool.hotelResvMgt.repositories.ReservationRepository;
 import com.itschool.hotelResvMgt.repositories.RoomRepository;
-import com.itschool.hotelResvMgt.services.GuestService;
 import com.itschool.hotelResvMgt.services.ReservationServiceImpl;
-import com.itschool.hotelResvMgt.services.RoomService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,19 +44,13 @@ class ReservationServiceImplTest {
     @Mock
     private GuestRepository guestRepository;
 
-    @Mock
-    private RoomService roomService;
-
-    @Mock
-    private GuestService guestService;
-
     @InjectMocks
     private ReservationServiceImpl reservationService;
 
     @BeforeEach
     void setUp() {
         reservationService = new ReservationServiceImpl(objectMapper,
-                reservationRepository, roomRepository, guestRepository, roomService, guestService);
+                reservationRepository, roomRepository, guestRepository);
     }
 
     @Test
