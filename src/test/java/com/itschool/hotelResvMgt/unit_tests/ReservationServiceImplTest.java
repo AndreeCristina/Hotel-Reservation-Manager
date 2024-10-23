@@ -2,6 +2,7 @@ package com.itschool.hotelResvMgt.unit_tests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.hotelResvMgt.exceptions.GuestNotFoundException;
+import com.itschool.hotelResvMgt.exceptions.ReservationNotFoundException;
 import com.itschool.hotelResvMgt.exceptions.RoomNotFoundException;
 import com.itschool.hotelResvMgt.exceptions.UnavailableRoomException;
 import com.itschool.hotelResvMgt.models.dtos.RequestReservationDTO;
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -77,22 +79,29 @@ public class ReservationServiceImplTest {
         Guest guest = new Guest();
         guest.setId(guestId);
 
+        Reservation reservation = new Reservation();
+        reservation.setRoom(room);
+        reservation.setGuest(guest);
+        reservation.setCheckInDate(checkInDate);
+        reservation.setCheckOutDate(checkOutDate);
+
+        ResponseReservationDTO responseDTO = new ResponseReservationDTO();
+
         Optional<Room> roomOptional = Optional.of(room);
         Optional<Guest> guestOptional = Optional.of(guest);
 
         when(roomRepository.findById(roomId)).thenReturn(roomOptional);
         when(guestRepository.findById(guestId)).thenReturn(guestOptional);
-        when(reservationRepository.save(any(Reservation.class))).thenReturn(new Reservation());
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 
-        Reservation reservation = new Reservation();
-        reservation.setCheckInDate(request.getCheckInDate());
-        reservation.setCheckOutDate(request.getCheckOutDate());
-        when(reservationRepository.save(reservation)).thenReturn(reservation);
+        doReturn(reservation).when(objectMapper).convertValue(any(RequestReservationDTO.class), eq(Reservation.class));
+        doReturn(responseDTO).when(objectMapper).convertValue(any(Reservation.class), eq(ResponseReservationDTO.class));
 
         ResponseReservationDTO response = reservationService.createReservation(request);
 
         verify(reservationRepository, times(1)).save(any(Reservation.class));
-        verify(objectMapper, times(2)).convertValue((Object) any(), (Class<Object>) any());
+        verify(objectMapper, times(1)).convertValue(any(RequestReservationDTO.class), eq(Reservation.class));
+        verify(objectMapper, times(1)).convertValue(any(Reservation.class), eq(ResponseReservationDTO.class));
         assertNotNull(response);
     }
 
@@ -109,6 +118,10 @@ public class ReservationServiceImplTest {
         request.setCheckInDate(checkInDate);
         request.setCheckOutDate(checkOutDate);
 
+        Reservation reservation = new Reservation();
+        when(objectMapper.convertValue(any(RequestReservationDTO.class), eq(Reservation.class)))
+                .thenReturn(reservation);
+
         when(roomRepository.findById(roomId)).thenReturn(Optional.empty());
 
         try {
@@ -116,6 +129,8 @@ public class ReservationServiceImplTest {
             fail("Expected RoomNotFoundException");
         } catch (RoomNotFoundException e) {
         }
+
+        verify(reservationRepository, never()).save(any(Reservation.class));
     }
 
     @Test
@@ -135,6 +150,10 @@ public class ReservationServiceImplTest {
         room.setId(roomId);
         Optional<Room> roomOptional = Optional.of(room);
 
+        Reservation reservation = new Reservation();
+        when(objectMapper.convertValue(any(RequestReservationDTO.class), eq(Reservation.class)))
+                .thenReturn(reservation);
+
         when(roomRepository.findById(roomId)).thenReturn(roomOptional);
         when(guestRepository.findById(guestId)).thenReturn(Optional.empty());
 
@@ -142,7 +161,10 @@ public class ReservationServiceImplTest {
             reservationService.createReservation(request);
             fail("Expected GuestNotFoundException");
         } catch (GuestNotFoundException e) {
+
         }
+
+        verify(reservationRepository, never()).save(any(Reservation.class));
     }
 
     @Test
@@ -162,7 +184,22 @@ public class ReservationServiceImplTest {
             reservationService.createReservation(request);
             fail("Expected UnavailableRoomException");
         } catch (UnavailableRoomException e) {
+
         } catch (Exception e) {
+
         }
+    }
+
+    @Test
+    public void testDeleteReservationByIdNotFound() {
+        Long reservationId = 1L;
+
+        when(reservationRepository.findById(reservationId)).thenReturn(Optional.empty());
+
+        assertThrows(ReservationNotFoundException.class, () -> {
+            reservationService.deleteReservationById(reservationId);
+        });
+
+        verify(reservationRepository, never()).deleteById(anyLong());
     }
 }
