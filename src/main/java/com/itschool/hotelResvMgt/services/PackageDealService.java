@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface PackageDealService {
 
-    public List<String> getServicesByPackageType(PackageDealType packageType);
+    List<String> getServicesByPackageType(PackageDealType packageType);
 }

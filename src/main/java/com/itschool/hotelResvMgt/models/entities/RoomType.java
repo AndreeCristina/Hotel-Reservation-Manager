@@ -6,5 +6,5 @@ public enum RoomType {
     SUPERIOR,
     SUITE,
     FAMILY,
-    EXECUTIVE;
+    EXECUTIVE
 }

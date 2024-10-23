@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface ReservationService {
 
-    public ResponseReservationDTO createReservation(RequestReservationDTO requestReservationDTO);
+    ResponseReservationDTO createReservation(RequestReservationDTO requestReservationDTO);
 
-    public void deleteReservationById(Long reservationId);
+    void deleteReservationById(Long reservationId);
 
-    public ResponseReservationDTO updateReservationCheckInDate(Long reservationId, RequestReservationDTO updateRequest);
+    ResponseReservationDTO updateReservationCheckInDate(Long reservationId, RequestReservationDTO updateRequest);
 
     List<ResponseReservationDTO> getReservations(LocalDate checkInDate, LocalDate checkOutDate, RoomType roomType);
 }
