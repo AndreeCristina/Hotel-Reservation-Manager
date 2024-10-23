@@ -54,3 +54,12 @@ One of the GET APIs allows retrieving reservations based on multiple parameters:
 GET api/reservations?checkInDate=2026-09-22&checkOutDate=2026-09-28&roomType=FAMILY
 
 This will return reservations filtered by check-in date, check-out date, and room type.
+
+## Starting the Application
+
+1. **Clone the repository:** `git clone https://github.com/AndreeCristina/Hotel-Reservation-Manager
+2. **Set up database:** Create a PostgreSQL database named `hotel_resv_mgr` and configure your database connection details in the `application.properties` file.
+3. **Build and run:** Use Maven to build and run the application:
+    - **Maven:** `mvn clean install spring-boot:run`
+
+The application will start on the default port (8080) and you can access the API endpoints using your preferred HTTP client.

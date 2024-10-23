@@ -49,7 +49,7 @@ public class ReservationServiceImpl implements ReservationService {
     public ResponseReservationDTO createReservation(@Valid RequestReservationDTO requestReservationDTO) {
         Reservation reservation = mapToReservation(requestReservationDTO);
 
-        if (!checkRoomAvailability(reservation.getRoom(), reservation.getCheckInDate(), reservation.getCheckOutDate())) {
+        if (!isRoomAvailable(reservation.getRoom(), reservation.getCheckInDate(), reservation.getCheckOutDate())) {
             throw new UnavailableRoomException(reservation.getRoom(), reservation.getCheckInDate(), reservation.getCheckOutDate());
         }
         Reservation savedReservation = reservationRepository.save(reservation);
@@ -127,12 +127,10 @@ public class ReservationServiceImpl implements ReservationService {
         }
         reservation.setGuest(guestOptional.get());
 
-        RoomType roomType = reservation.getRoom().getType();
-
         return reservation;
     }
 
-    private boolean checkRoomAvailability(Room room, LocalDate checkInDate, LocalDate checkOutDate) {
+    private boolean isRoomAvailable(Room room, LocalDate checkInDate, LocalDate checkOutDate) {
         List<Reservation> existingReservations = reservationRepository.findByRoomIdAndCheckInDateBetween(room.getId(), checkInDate, checkOutDate);
 
         if (!existingReservations.isEmpty()) {

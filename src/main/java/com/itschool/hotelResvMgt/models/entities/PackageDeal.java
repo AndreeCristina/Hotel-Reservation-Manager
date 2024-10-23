@@ -13,8 +13,8 @@ public class PackageDeal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "package_type", nullable = false)
-    private PackageDealType PackageType;
+    @Column(name = "package_deals", nullable = false)
+    private PackageDealType packageDealType;
 
     @Column(name = "description", nullable = false)
     private String description;

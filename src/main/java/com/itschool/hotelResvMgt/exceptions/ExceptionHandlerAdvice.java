@@ -1,6 +1,5 @@
 package com.itschool.hotelResvMgt.exceptions;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -53,14 +52,5 @@ public class ExceptionHandlerAdvice {
             errors.put(fieldName, errorMessage);
         });
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-    }
-
-    private String objectToString(Object response) {
-        try {
-            return objectMapper.writeValueAsString(response);
-        } catch (JsonProcessingException e) {
-            log.error("Error processing response to string");
-            return "Internal error";
-        }
     }
 }

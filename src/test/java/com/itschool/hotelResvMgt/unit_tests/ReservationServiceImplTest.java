@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ReservationServiceImplTest {
+class ReservationServiceImplTest {
 
     @Mock
     private ObjectMapper objectMapper;
@@ -56,13 +56,13 @@ public class ReservationServiceImplTest {
     private ReservationServiceImpl reservationService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         reservationService = new ReservationServiceImpl(objectMapper,
                 reservationRepository, roomRepository, guestRepository, roomService, guestService);
     }
 
     @Test
-    public void testCreateReservationSuccess() throws Exception {
+    void testCreateReservationSuccess() throws Exception {
         Long roomId = 1L;
         Long guestId = 2L;
         LocalDate checkInDate = LocalDate.now().plusDays(2);
@@ -106,7 +106,7 @@ public class ReservationServiceImplTest {
     }
 
     @Test
-    public void testCreateReservationRoomNotFound() throws Exception {
+    void testCreateReservationRoomNotFound() throws Exception {
         Long roomId = 1L;
         Long guestId = 2L;
         LocalDate checkInDate = LocalDate.now().plusDays(2);
@@ -134,7 +134,7 @@ public class ReservationServiceImplTest {
     }
 
     @Test
-    public void testCreateReservationGuestNotFound() throws Exception {
+    void testCreateReservationGuestNotFound() throws Exception {
         Long roomId = 1L;
         Long guestId = 2L;
         LocalDate checkInDate = LocalDate.now().plusDays(2);
@@ -168,7 +168,7 @@ public class ReservationServiceImplTest {
     }
 
     @Test
-    public void testCreateReservationUnavailableRoom() throws Exception {
+    void testCreateReservationUnavailableRoom() throws Exception {
         Long roomId = 1L;
         Long guestId = 2L;
         LocalDate checkInDate = LocalDate.now().plusDays(2);
@@ -191,7 +191,7 @@ public class ReservationServiceImplTest {
     }
 
     @Test
-    public void testDeleteReservationByIdNotFound() {
+    void testDeleteReservationByIdNotFound() {
         Long reservationId = 1L;
 
         when(reservationRepository.findById(reservationId)).thenReturn(Optional.empty());

@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 @SpringBootTest
-public class ReservationControllerIntegrationTest {
+class ReservationControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -45,7 +45,7 @@ public class ReservationControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void testCreateReservation_Success() throws Exception {
+    void testCreateReservation_Success() throws Exception {
         RequestReservationDTO request = new RequestReservationDTO();
         request.setRoomId(1L);
         request.setGuestId(2L);
@@ -69,7 +69,7 @@ public class ReservationControllerIntegrationTest {
     }
 
     @Test
-    public void testCreateReservation_InvalidRequest() throws Exception {
+    void testCreateReservation_InvalidRequest() throws Exception {
         RequestReservationDTO request = new RequestReservationDTO();
 
         mockMvc.perform(post("/api/reservations")
@@ -79,28 +79,29 @@ public class ReservationControllerIntegrationTest {
     }
 
     @Test
-    public void testGetReservations_Success() throws Exception {
+    void testGetReservations_Success() throws Exception {
         mockMvc.perform(get("/api/reservations"))
                 .andExpect(status().isOk())
                 .andExpect(result -> result.getResponse().getContentAsString().contains("reservation"));
     }
 
     @Test
-    public void testUpdateReservationCheckInDate_Success() throws Exception {
+    void testUpdateReservationCheckInDate_Success() throws Exception {
         Long reservationId = 1L;
         RequestReservationDTO updateRequest = new RequestReservationDTO();
-
         updateRequest.setCheckInDate(LocalDate.now().plusDays(3));
+
+        ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
         mockMvc.perform(patch("/api/reservations/" + reservationId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString((updateRequest))))
+                        .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void testDeleteReservation_Success() throws Exception {
+    void testDeleteReservation_Success() throws Exception {
         Long reservationId = 1L;
 
         mockMvc.perform(delete("/api/reservations/" + reservationId))
